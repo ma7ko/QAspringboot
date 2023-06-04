@@ -1,0 +1,109 @@
+package mk.ukim.finki.finkiqa.model.dto;
+
+import java.util.List;
+
+import lombok.Data;
+
+@Data
+public class AnswerDto {
+	private Long id;
+    private String explanation;
+    private Long likes;
+    private Long dislikes;
+    private String posted;
+    private String lastEdited;
+    private Long questionId;
+    private String username;
+    private List<String> likedByUsers;
+    private List<String> dislikedByUsers;
+    
+
+    public AnswerDto(String explanation, Long likes, Long dislikes, Long questionId, String username) {
+        this.explanation = explanation;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.questionId = questionId;
+        this.username = username;
+    }
+    
+	public String getExplanation() {
+		return explanation;
+	}
+
+	public Long getLikes() {
+		return likes;
+	}
+
+	public Long getDislikes() {
+		return dislikes;
+	}
+
+	public Long getQuestionId() {
+		return questionId;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setExplanation(String explanation) {
+		this.explanation = explanation;
+	}
+
+	public void setLikes(Long likes) {
+		this.likes = likes;
+	}
+
+	public void setDislikes(Long dislikes) {
+		this.dislikes = dislikes;
+	}
+
+	public void setQuestionId(Long questionId) {
+		this.questionId = questionId;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getPosted() {
+		return posted;
+	}
+
+	public String getLastEdited() {
+		return lastEdited;
+	}
+
+	public List<String> getLikedByUsers() {
+		return likedByUsers;
+	}
+
+	public List<String> getDislikedByUsers() {
+		return dislikedByUsers;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setPosted(String posted) {
+		this.posted = posted;
+	}
+
+	public void setLastEdited(String lastEdited) {
+		this.lastEdited = lastEdited;
+	}
+
+	public void setLikedByUsers(List<String> likedByUsers) {
+		this.likedByUsers = likedByUsers;
+	}
+
+	public void setDislikedByUsers(List<String> dislikedByUsers) {
+		this.dislikedByUsers = dislikedByUsers;
+	}
+
+}
