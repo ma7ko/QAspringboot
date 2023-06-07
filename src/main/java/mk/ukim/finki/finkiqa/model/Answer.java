@@ -45,6 +45,7 @@ public class Answer {
         this.question = question;
         this.user = user;
         this.posted = LocalDateTime.now();
+        this.lastEdited = LocalDateTime.now();
     }
 
 	public Long getId() {

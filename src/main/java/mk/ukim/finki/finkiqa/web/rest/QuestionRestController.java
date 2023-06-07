@@ -3,7 +3,9 @@ package mk.ukim.finki.finkiqa.web.rest;
 import mk.ukim.finki.finkiqa.model.Answer;
 import mk.ukim.finki.finkiqa.model.Question;
 import mk.ukim.finki.finkiqa.model.Tag;
+import mk.ukim.finki.finkiqa.model.dto.AnswerDto;
 import mk.ukim.finki.finkiqa.model.dto.QuestionDto;
+import mk.ukim.finki.finkiqa.model.dto.mapper.AnswerMapper;
 import mk.ukim.finki.finkiqa.model.dto.mapper.QuestionMapper;
 import mk.ukim.finki.finkiqa.model.dto.search.PagedResponse;
 import mk.ukim.finki.finkiqa.model.dto.search.SearchRequest;
@@ -24,13 +26,16 @@ public class QuestionRestController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final QuestionMapper questionMapper;
+    private final AnswerMapper answerMapper;
 
     public QuestionRestController(QuestionService questionService,
                                   AnswerService answerService,
-                                  QuestionMapper questionMapper) {
+                                  QuestionMapper questionMapper,
+                                  AnswerMapper answerMapper) {
         this.questionService = questionService;
         this.answerService = answerService;
         this.questionMapper = questionMapper;
+        this.answerMapper = answerMapper;
     }
 
     @GetMapping
@@ -70,8 +75,20 @@ public class QuestionRestController {
     }
 
     @GetMapping("/{id}/answers")
-    public List<Answer> listAllAnswersByQuestionId(@PathVariable Long id) {
-        return this.answerService.getAnswersFromQuestionId(id);
+    public ResponseEntity<PagedResponse<AnswerDto>> listAllAnswersByQuestionId(@PathVariable Long id, @RequestParam Integer page, @RequestParam Integer size) {
+    	try {
+    		PagedResponse<Answer> answers = this.answerService.getAnswersFromQuestionId(id, new SearchRequest(page, size));
+    		PagedResponse<AnswerDto> answerDtos = new PagedResponse<AnswerDto>();
+    		answerDtos.setContent(this.answerMapper.toDTOs(answers.getContent()));
+    		answerDtos.setCount(answers.getCount());
+    		answerDtos.setTotalCount(answers.getTotalCount());
+    		
+    		return ResponseEntity.ok(answerDtos);
+    	} catch (Exception exception) {
+    		return ResponseEntity.badRequest().build();
+    	}
+    	//	PREVIOUS IMPLEMENTATION
+        		//	return this.answerMapper.toDTOs(this.answerService.getAnswersFromQuestionId(id));
     }
 
     @DeleteMapping("/{id}/delete")
@@ -98,17 +115,29 @@ public class QuestionRestController {
     }
 
     @GetMapping("/{id}/like-by/{userId}")
-    public ResponseEntity<Question> likeQuestion(@PathVariable Long id, @PathVariable String userId) {
-        return this.questionService.likeQuestionById(id, userId)
-                .map(question -> ResponseEntity.ok().body(question))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<QuestionDto> likeQuestion(@PathVariable Long id, @PathVariable String userId) {
+        Optional<Question> optionalQuestion = this.questionService.likeQuestionById(id, userId);
+        
+        if (optionalQuestion.isEmpty()) {
+        	return ResponseEntity.notFound().build();
+        }
+        
+        Question question = optionalQuestion.get();
+        QuestionDto questionDTO = this.questionMapper.toDTO(question);
+        return ResponseEntity.ok().body(questionDTO);
     }
 
     @GetMapping("/{id}/dislike-by/{userId}")
-    public ResponseEntity<Question> dislikeQuestion(@PathVariable Long id, @PathVariable String userId) {
-        return this.questionService.dislikeQuestionById(id, userId)
-                .map(question -> ResponseEntity.ok().body(question))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<QuestionDto> dislikeQuestion(@PathVariable Long id, @PathVariable String userId) {
+        Optional<Question> optionalQuestion = this.questionService.dislikeQuestionById(id, userId);
+        
+        if (optionalQuestion.isEmpty()) {
+        	return ResponseEntity.notFound().build();
+        }
+        
+        Question question = optionalQuestion.get();
+        QuestionDto questionDTO = this.questionMapper.toDTO(question);
+        return ResponseEntity.ok().body(questionDTO);
     }
 
     @GetMapping("/find-tags-containing/{pattern}")

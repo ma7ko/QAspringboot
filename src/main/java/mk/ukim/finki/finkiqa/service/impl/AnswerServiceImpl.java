@@ -3,14 +3,20 @@ package mk.ukim.finki.finkiqa.service.impl;
 import mk.ukim.finki.finkiqa.model.Answer;
 import mk.ukim.finki.finkiqa.model.Question;
 import mk.ukim.finki.finkiqa.model.User;
+import mk.ukim.finki.finkiqa.model.dto.search.PagedResponse;
+import mk.ukim.finki.finkiqa.model.dto.search.SearchRequest;
+import mk.ukim.finki.finkiqa.model.dto.search.util.SearchRequestUtilClass;
 import mk.ukim.finki.finkiqa.repository.AnswerRepository;
 import mk.ukim.finki.finkiqa.repository.QuestionRepository;
 import mk.ukim.finki.finkiqa.repository.UserRepository;
 import mk.ukim.finki.finkiqa.service.AnswerService;
+
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -42,13 +48,23 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<Answer> getAnswersFromQuestionId(Long id) {
-        Comparator<Answer> dateComparator = (c1, c2) -> {
-            if (c1.getPosted().isBefore(c2.getPosted())) return -1;
-            else return 1;
-        };
+    public PagedResponse<Answer> getAnswersFromQuestionId(Long id, SearchRequest searchRequest) {
+    	
+    	final Page<Answer> answers = this.answerRepository.findAllByQuestionId(id, SearchRequestUtilClass.toPageRequest(searchRequest, "posted"));
+        
+        if (answers.isEmpty()) {
+        	return new PagedResponse<Answer>(Collections.emptyList(), 0L, answers.getTotalElements());
+        }
+        
+        return new PagedResponse<Answer>(answers.getContent(), (long) answers.getSize(), answers.getTotalElements());
+        
+    	// 		PREVIOUS IMPLEMENTATION
+    	//Comparator<Answer> dateComparator = (c1, c2) -> {
+        //    if (c1.getPosted().isBefore(c2.getPosted())) return -1;
+        //    else return 1;
+        //};
 
-        return this.answerRepository.findAllByQuestionId(id).stream().sorted(dateComparator.reversed()).collect(Collectors.toList());
+        //return this.answerRepository.findAllByQuestionId(id).stream().sorted(dateComparator.reversed()).collect(Collectors.toList());
     }
 
     @Override

@@ -10,15 +10,18 @@ public class AnswerDto {
     private String explanation;
     private Long likes;
     private Long dislikes;
-    private String posted;
-    private String lastEdited;
+    private String datePosted;
+    private String dateLastEdited;
     private Long questionId;
     private String username;
-    private List<String> likedByUsers;
-    private List<String> dislikedByUsers;
+    private List<String> likedBy;
+    private List<String> dislikedBy;
     
 
-    public AnswerDto(String explanation, Long likes, Long dislikes, Long questionId, String username) {
+    
+    public AnswerDto() {}
+
+	public AnswerDto(String explanation, Long likes, Long dislikes, Long questionId, String username) {
         this.explanation = explanation;
         this.likes = likes;
         this.dislikes = dislikes;
@@ -70,40 +73,40 @@ public class AnswerDto {
 		return id;
 	}
 
-	public String getPosted() {
-		return posted;
+	public String getDatePosted() {
+		return datePosted;
 	}
 
-	public String getLastEdited() {
-		return lastEdited;
+	public String getDateLastEdited() {
+		return dateLastEdited;
 	}
 
-	public List<String> getLikedByUsers() {
-		return likedByUsers;
+	public List<String> getLikedBy() {
+		return likedBy;
 	}
 
-	public List<String> getDislikedByUsers() {
-		return dislikedByUsers;
+	public List<String> getDislikedBy() {
+		return dislikedBy;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public void setPosted(String posted) {
-		this.posted = posted;
+	public void setDatePosted(String datePosted) {
+		this.datePosted = datePosted;
 	}
 
-	public void setLastEdited(String lastEdited) {
-		this.lastEdited = lastEdited;
+	public void setDateLastEdited(String dateLastEdited) {
+		this.dateLastEdited = dateLastEdited;
 	}
 
-	public void setLikedByUsers(List<String> likedByUsers) {
-		this.likedByUsers = likedByUsers;
+	public void setLikedBy(List<String> likedBy) {
+		this.likedBy = likedBy;
 	}
 
-	public void setDislikedByUsers(List<String> dislikedByUsers) {
-		this.dislikedByUsers = dislikedByUsers;
+	public void setDislikedBy(List<String> dislikedBy) {
+		this.dislikedBy = dislikedBy;
 	}
 
 }
